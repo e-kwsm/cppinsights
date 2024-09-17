@@ -7,8 +7,4 @@
 .tmp.cpp:22:9: error: only function and template parameters can be parameter packs
    22 |     auto... args;
       |         ^
-error: templates cannot be declared inside of a local class
-.tmp.cpp:30:19: error: initializer contains unexpanded parameter pack 'args'
-   30 |   } __lambda_13_12{std::move(f), std::move(args)};
-      |                   ^                        ~~~~
-5 errors generated.
+3 errors generated.

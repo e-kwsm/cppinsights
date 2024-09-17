@@ -81,7 +81,6 @@ void f()
     {
       return __lambda_15_17{}.operator()<type_parameter_0_0>(container);
     }
-    
   };
   
   __lambda_15_17 lambda = __lambda_15_17{};

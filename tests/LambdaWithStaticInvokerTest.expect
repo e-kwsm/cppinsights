@@ -24,8 +24,7 @@ void NoParams()
     
     
     public:
-    // /*constexpr */ __lambda_5_14() = default;
-    
+    // /* constexpr */ __lambda_5_14() = default;
   };
   
   __lambda_5_14 l = __lambda_5_14{};
@@ -57,8 +56,7 @@ class __lambda_14_20
   
   
   public:
-  // /*constexpr */ __lambda_14_20() = default;
-  
+  // /* constexpr */ __lambda_14_20() = default;
 };
 
 __lambda_14_20 lWithParams = __lambda_14_20{};
@@ -115,8 +113,7 @@ class __lambda_25_16
   
   
   public:
-  // /*constexpr */ __lambda_25_16() = default;
-  
+  // /* constexpr */ __lambda_25_16() = default;
 };
 
 __lambda_25_16 glambda = __lambda_25_16{};
@@ -185,8 +182,7 @@ class __lambda_32_27
   
   
   public:
-  // /*constexpr */ __lambda_32_27() = default;
-  
+  // /* constexpr */ __lambda_32_27() = default;
 };
 
 __lambda_32_27 lWithParamsAndNTTP = __lambda_32_27{};

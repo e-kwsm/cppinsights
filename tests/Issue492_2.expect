@@ -49,8 +49,7 @@ void f()
     
     
     public:
-    // /*constexpr */ __lambda_18_34() = default;
-    
+    // /* constexpr */ __lambda_18_34() = default;
   };
   
   priority_queue<int, float, __lambda_18_34> min_heap = priority_queue<int, float, __lambda_18_34>();

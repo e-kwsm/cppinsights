@@ -20,10 +20,9 @@ int main()
       __lambda_4_5{}.operator()();
     }
     
-    
-  } __lambda_4_5{};
+  };
   
-  __lambda_4_5.operator()();
+  __lambda_4_5{}.operator()();
     
   class __lambda_7_5
   {
@@ -45,10 +44,9 @@ int main()
       __lambda_7_5{}.operator()();
     }
     
-    
-  } __lambda_7_5{};
+  };
   
-  __lambda_7_5.operator()();
+  __lambda_7_5{}.operator()();
   int a;
   int b;
     
@@ -72,9 +70,8 @@ int main()
       __lambda_13_5{}.operator()(x, y);
     }
     
-    
-  } __lambda_13_5{};
+  };
   
-  __lambda_13_5.operator()(a, b);
+  __lambda_13_5{}.operator()(a, b);
   return 0;
 }

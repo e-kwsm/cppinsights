@@ -7,7 +7,7 @@
 .tmp.cpp:56:16: error: declaration of variable 'test' with deduced type 'auto' requires an initializer
    56 |           auto test;
       |                ^
-.tmp.cpp:89:10: error: no matching member function for call to 'operator()'
-   89 |   lambda.operator()(MyArrayWrapper<int>(vec));
+.tmp.cpp:88:10: error: no matching member function for call to 'operator()'
+   88 |   lambda.operator()(MyArrayWrapper<int>(vec));
       |   ~~~~~~~^~~~~~~~~~
 4 errors generated.

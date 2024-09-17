@@ -19,7 +19,6 @@ class __lambda_1_10
     return __lambda_1_10{}.operator()();
   }
   
-  
 };
 
 __lambda_1_10 x = __lambda_1_10{};
@@ -33,14 +32,8 @@ class __lambda_5_11
     return b * a;
   }
   
-  private: 
+  // private: 
   int a;
-  
-  public:
-  __lambda_5_11(const int & _a)
-  : a{_a}
-  {}
-  
 };
 
 __lambda_5_11 x2 = __lambda_5_11{5};

@@ -4,7 +4,4 @@
 .tmp.cpp:26:11: error: 'auto' not allowed in non-static class member
    26 |           auto rhs;
       |           ^~~~
-.tmp.cpp:29:48: error: 'auto' not allowed in function prototype
-   29 |           __lambda_15_17(vector<T, N> * _this, auto _rhs)
-      |                                                ^~~~
-3 errors generated.
+2 errors generated.

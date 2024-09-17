@@ -21,7 +21,6 @@ void print(const T1 & arg1, const Types &... args)
     {
       return __lambda_11_28{}.operator()<type_parameter_1_0>(arg);
     }
-    
   };
   
   auto coutSpaceAndArg = __lambda_11_28{};
@@ -67,7 +66,6 @@ void print<' ', char[3], double, std::basic_string<char, std::char_traits<char>,
     {
       return __lambda_11_28{}.operator()<type_parameter_0_0>(arg);
     }
-    
   };
   
   __lambda_11_28 coutSpaceAndArg = __lambda_11_28{};

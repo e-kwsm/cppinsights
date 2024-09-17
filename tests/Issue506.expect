@@ -41,7 +41,6 @@ int main()
       return __lambda_12_50{}.operator()(ch);
     }
     
-    
   };
   
   std::cout.operator<<(search('A', ::isalpha, ::isdigit, __lambda_12_50{}));

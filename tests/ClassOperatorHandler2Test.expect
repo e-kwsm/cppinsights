@@ -112,10 +112,9 @@ int main()
       __lambda_60_5{}.operator()();
     }
     
-    
-  } __lambda_60_5{};
+  };
   
-  __lambda_60_5.operator()();
+  __lambda_60_5{}.operator()();
   int n = 10;
   f(n);
   f(42);

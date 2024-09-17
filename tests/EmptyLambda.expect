@@ -20,8 +20,7 @@ void foo()
       __lambda_2_1{}.operator()();
     }
     
-    
-  } __lambda_2_1{};
+  };
   
-  __lambda_2_1.operator()();
+  __lambda_2_1{}.operator()();
 }

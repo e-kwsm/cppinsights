@@ -32,14 +32,8 @@ int main()
       return (x + y) + b;
     }
     
-    private: 
+    // private: 
     int & y;
-    
-    public:
-    __lambda_12_14(int & _y)
-    : y{_y}
-    {}
-    
   };
   
   __lambda_12_14 l = __lambda_12_14{y};

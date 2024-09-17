@@ -26,7 +26,6 @@ void x()
           __lambda_4_5{}.operator()();
         }
         
-        
       };
       
       __lambda_4_5{};
@@ -43,7 +42,6 @@ void x()
     {
       __lambda_3_12{}.operator()();
     }
-    
     
   };
   

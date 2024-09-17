@@ -13,17 +13,11 @@ int main()
       return x;
     }
     
-    private: 
+    // private: 
     int x;
-    
-    public:
-    __lambda_7_14(int & _x)
-    : x{_x}
-    {}
-    
-  } __lambda_7_14{x};
+  };
   
-  int z = __lambda_7_14.operator()();
+  int z = __lambda_7_14{x}.operator()();
   printf("x: %d z: %d\n", x, z);
   return 0;
 }

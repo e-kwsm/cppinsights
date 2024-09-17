@@ -19,19 +19,12 @@ auto delay_invoke(F f, Args... args)
       return std::invoke(f, targs... );
     }
     
-    private: 
+    // private: 
     auto f;
     auto... targs;
-    
-    public:
-    __lambda_15_12(auto _f, auto const &... _targs)
-    : f{_f}
-    , targs{_targs...}
-    {}
-    
-  } __lambda_15_12{std::move(f), std::move(args)};
+  };
   
-  return __lambda_15_12;
+  return __lambda_15_12{std::move(f), std::move(args)...};
 }
 
 #ifdef INSIGHTS_USE_TEMPLATE
@@ -47,25 +40,15 @@ __lambda_15_12 delay_invoke<void (*)(int, int, int, int), int, int, int, int>(vo
       return std::invoke(f, __targs1, __targs2, __targs3, __targs4);
     }
     
-    private: 
+    // private: 
     void (*f)(int, int, int, int);
     int __targs1;
     int __targs2;
     int __targs3;
     int __targs4;
-    
-    public:
-    __lambda_15_12(void (*_f)(int, int, int, int), int && ___targs1, int && ___targs2, int && ___targs3, int && ___targs4)
-    : f{_f}
-    , __targs1{std::move(___targs1)}
-    , __targs2{std::move(___targs2)}
-    , __targs3{std::move(___targs3)}
-    , __targs4{std::move(___targs4)}
-    {}
-    
-  } __lambda_15_12{std::move(f), std::move(__args1), std::move(__args2), std::move(__args3), std::move(__args4)};
+  };
   
-  return __lambda_15_12;
+  return __lambda_15_12{std::move(f), std::move(__args1), std::move(__args2), std::move(__args3), std::move(__args4)};
 }
 #endif
 

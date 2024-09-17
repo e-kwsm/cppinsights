@@ -4,16 +4,16 @@
 .tmp.cpp:403:31: error: unknown type name 'retType_73_4'
   403 |     inline constexpr operator retType_73_4 () const noexcept
       |                               ^
-.tmp.cpp:427:26: error: 'auto' not allowed in type alias
-  427 |     using retType_74_4 = auto (*)(int);
+.tmp.cpp:426:26: error: 'auto' not allowed in type alias
+  426 |     using retType_74_4 = auto (*)(int);
       |                          ^~~~
-.tmp.cpp:428:31: error: unknown type name 'retType_74_4'
-  428 |     inline constexpr operator retType_74_4 () const noexcept
+.tmp.cpp:427:31: error: unknown type name 'retType_74_4'
+  427 |     inline constexpr operator retType_74_4 () const noexcept
       |                               ^
-.tmp.cpp:446:5: error: templates cannot be declared inside of a local class
-  446 |     template<class type_parameter_1_0>
+.tmp.cpp:444:5: error: templates cannot be declared inside of a local class
+  444 |     template<class type_parameter_1_0>
       |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.tmp.cpp:453:5: error: templates cannot be declared inside of a local class
-  453 |     template<class type_parameter_1_0>
+.tmp.cpp:451:5: error: templates cannot be declared inside of a local class
+  451 |     template<class type_parameter_1_0>
       |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 6 errors generated.

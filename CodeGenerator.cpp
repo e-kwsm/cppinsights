@@ -77,11 +77,17 @@ BUILD_OPT_AND_O(CanonicalType, const InitListExpr&, QualType)
     return t.getType().getCanonicalType();
 };
 
-static std::string AccessToStringWithColon(const AccessSpecifier& access)
+STRONG_BOOL(TrailingSpace);
+static std::string AccessToStringWithColon(const AccessSpecifier& access,
+                                           const TrailingSpace    endWithTrailingSpace = TrailingSpace::Yes)
 {
     std::string accessStr{getAccessSpelling(access)};
     if(not accessStr.empty()) {
-        accessStr += ": "sv;
+        if(TrailingSpace::Yes == endWithTrailingSpace) {
+            accessStr += ": "sv;
+        } else {
+            accessStr += ":"sv;
+        }
     }
 
     return accessStr;
@@ -192,39 +198,6 @@ public:
 
 protected:
     bool InsertNamespace() const override { return true; }
-};
-//-----------------------------------------------------------------------------
-
-/// \brief A special code generator for Lambda init captures which use \c std::move
-class LambdaInitCaptureCodeGenerator final : public CodeGenerator
-{
-public:
-    explicit LambdaInitCaptureCodeGenerator(OutputFormatHelper& outputFormatHelper,
-                                            LambdaStackType&    lambdaStack,
-                                            std::string_view    varName)
-    : CodeGenerator{outputFormatHelper, lambdaStack, ProcessingPrimaryTemplate::No}
-    , mVarName{varName}
-    {
-    }
-
-    using CodeGenerator::InsertArg;
-
-    /// Replace every \c VarDecl with the given variable name. This cover init captures which introduce a new name.
-    /// However, it means that _all_ VarDecl's will be changed.
-    /// TODO: Check if it is really good to replace all VarDecl's
-    void InsertArg(const DeclRefExpr* stmt) override
-    {
-        if(isa<VarDecl>(stmt->getDecl())) {
-            mOutputFormatHelper.Append("_"sv, mVarName);
-
-        } else {
-
-            CodeGenerator::InsertArg(stmt);
-        }
-    }
-
-private:
-    std::string_view mVarName;  ///< The name of the variable that needs to be prefixed with _.
 };
 //-----------------------------------------------------------------------------
 
@@ -422,8 +395,7 @@ void CodeGenerator::InsertArg(const VarTemplateDecl* stmt)
     // VarTemplatedDecl's can have lambdas as initializers. Push a VarDecl on the stack, otherwise the lambda would
     // appear in the middle of template<....> and the variable itself.
     {
-        LAMBDA_SCOPE_HELPER(Decltype);  // Needed for P0315Checker
-        mLambdaStack.back().setInsertName(true);
+        LAMBDA_SCOPE_HELPER(DecltypeWithName);  // Needed for P0315Checker
 
         InsertTemplateParameters(*stmt->getTemplateParameters());
     }
@@ -599,8 +571,7 @@ static std::optional<std::string> GetFieldDeclNameForLambda(const FieldDecl&    
 {
     if(cxxRecordDecl.isLambda()) {
         llvm::DenseMap<const ValueDecl*, FieldDecl*> captures{};
-
-        FieldDecl* thisCapture{};
+        FieldDecl*                                   thisCapture{};
 
         cxxRecordDecl.getCaptureFields(captures, thisCapture);
 
@@ -1888,8 +1859,7 @@ void CodeGenerator::InsertTemplateParameters(const TemplateParameterList& list,
 void CodeGenerator::InsertArg(const ClassTemplateDecl* stmt)
 {
     {
-        LAMBDA_SCOPE_HELPER(Decltype);  // Needed for P0315Checker
-        mLambdaStack.back().setInsertName(true);
+        LAMBDA_SCOPE_HELPER(DecltypeWithName);  // Needed for P0315Checker
 
         InsertTemplateParameters(*stmt->getTemplateParameters());
     }
@@ -2021,16 +1991,12 @@ void CodeGenerator::InsertArg(const CXXDeleteExpr* stmt)
 void CodeGenerator::InsertConstructorExpr(const auto* stmt)
 {
     {
-        CONDITIONAL_LAMBDA_SCOPE_HELPER(Decltype, not isa<DecltypeType>(stmt->getType()))
+        // only use this a insert point, if we are not coming from a decltype, for example decltype(decltype(...)) or
+        // decltype inside a concept.
+        CONDITIONAL_LAMBDA_SCOPE_HELPER(Decltype, not InsideDecltype());
 
         P0315Visitor dt{*this};
         dt.TraverseType(stmt->getType());
-
-        if(not mLambdaStack.empty()) {
-            for(const auto& e : mLambdaStack) {
-                RETURN_IF((LambdaCallerType::MemberCallExpr == e.callerType()) and isa<DecltypeType>(stmt->getType()));
-            }
-        }
     }
 
     mOutputFormatHelper.Append(GetName(stmt->getType(), Unqualified::Yes));
@@ -2143,7 +2109,7 @@ void CodeGenerator::InsertArg(const CXXInheritedCtorInitExpr* stmt)
 
 bool CodeGenerator::InsideDecltype() const
 {
-    return (not mLambdaStack.empty()) and (LambdaCallerType::Decltype == mLambdaStack.back().callerType());
+    return (not mLambdaStack.empty()) and (mLambdaStack.back().callerType() == LambdaCallerType::Decltype);
 }
 //-----------------------------------------------------------------------------
 
@@ -2254,7 +2220,7 @@ void CodeGenerator::InsertArg(const CallExpr* stmt)
 
     CONDITIONAL_LAMBDA_SCOPE_HELPER(CallExpr, not insideDecltype)
     if(insideDecltype) {
-        mLambdaStack.back().setInsertName(true);
+        mLambdaStack.back().setCallerType(LambdaCallerType::DecltypeWithName);
     }
 
     UpdateCurrentPos(mCurrentCallExprPos);
@@ -2303,7 +2269,7 @@ void CodeGenerator::InsertArg(const CallExpr* stmt)
     });
 
     if(insideDecltype) {
-        mLambdaStack.back().setInsertName(false);
+        mLambdaStack.back().setCallerType(LambdaCallerType::Decltype);
     }
 
     mCurrentCallExprPos.reset();
@@ -2909,34 +2875,17 @@ void CodeGenerator::InsertArg(const CXXOperatorCallExpr* stmt)
 }
 //-----------------------------------------------------------------------------
 
-void CodeGenerator::InsertArg(const LambdaExpr* stmt)
-{
-    if(not mLambdaStack.empty()) {
-        const bool insertName{mLambdaStack.back().insertName()};
-
-        HandleLambdaExpr(stmt, mLambdaStack.back());
-
-        if(insertName) {
-            mOutputFormatHelper.Append(GetLambdaName(*stmt));
-        }
-
-    } else if(LambdaInInitCapture::Yes == mLambdaInitCapture) {
-        LAMBDA_SCOPE_HELPER(InitCapture);
-        HandleLambdaExpr(stmt, mLambdaStack.back());
-    } else {
-        LAMBDA_SCOPE_HELPER(LambdaExpr);
-        HandleLambdaExpr(stmt, mLambdaStack.back());
-    }
-
-    if(not mLambdaStack.empty()) {
-        mLambdaStack.back().insertInits(mOutputFormatHelper);
-    }
-}
-//-----------------------------------------------------------------------------
-
 void CodeGenerator::InsertArg(const CXXThisExpr*)
 {
-    mOutputFormatHelper.Append(kwThis);
+    if(not mLambdaExpr) {
+        mOutputFormatHelper.Append(kwThis);
+    } else if(ranges::any_of(mLambdaExpr->captures(),
+                             [](const LambdaCapture& c) { return (c.getCaptureKind() == LCK_StarThis); })) {
+        mOutputFormatHelper.Append("(&"sv, kwInternalThis, ")"sv);
+
+    } else {
+        mOutputFormatHelper.Append(kwInternalThis);
+    }
 }
 //-----------------------------------------------------------------------------
 
@@ -3730,7 +3679,7 @@ void CodeGenerator::InsertArg(const CXXDeductionGuideDecl* stmt)
 
 void CodeGenerator::InsertTemplate(const FunctionTemplateDecl* stmt, bool withSpec)
 {
-    LAMBDA_SCOPE_HELPER(TemplateHead);
+    LAMBDA_SCOPE_HELPER(DecltypeWithName);
 
     mProcessingPrimaryTemplate = ProcessingPrimaryTemplate::Yes;
 
@@ -3856,13 +3805,10 @@ void CodeGenerator::InsertAttribute(const Attr& attr)
 
 void CodeGenerator::InsertArg(const CXXRecordDecl* stmt)
 {
-    const size_t insertPosBeforeClass{mOutputFormatHelper.CurrentPos()};
-    const auto   indentAtInsertPosBeforeClass{mOutputFormatHelper.GetIndent()};
-
     SCOPE_HELPER(stmt);
 
     // Prevent a case like in #205 where the lambda appears twice.
-    RETURN_IF(stmt->isLambda() and (mLambdaStack.empty() or (nullptr == mLambdaExpr)));
+    RETURN_IF(stmt->isLambda() and (mLambdaStack.empty()));
 
     const auto* classTemplatePartialSpecializationDecl = dyn_cast_or_null<ClassTemplatePartialSpecializationDecl>(stmt);
     const auto* classTemplateSpecializationDecl        = dyn_cast_or_null<ClassTemplateSpecializationDecl>(stmt);
@@ -3966,11 +3912,10 @@ void CodeGenerator::InsertArg(const CXXRecordDecl* stmt)
 
     UpdateCurrentPos(mCurrentFieldPos);
 
-    OnceTrue        firstRecordDecl{};
-    OnceTrue        firstDecl{};
+    const bool      isLambda{stmt->isLambda()};
     Decl::Kind      formerKind{};
     AccessSpecifier lastAccess{stmt->isClass() ? AS_private : AS_public};
-    for(const auto* d : stmt->decls()) {
+    for(OnceTrue firstRecordDecl{}, firstDecl{}; const auto* d : stmt->decls()) {
         if(isa<CXXRecordDecl>(d) and firstRecordDecl) {
             continue;
         }
@@ -3981,7 +3926,7 @@ void CodeGenerator::InsertArg(const CXXRecordDecl* stmt)
             // mOutputFormatHelper.AppendNewLine();
         }
 
-        if((stmt->isLambda() and isa<CXXDestructorDecl>(d)) and not d->isUsed()) {
+        if((isLambda and isa<CXXDestructorDecl>(d)) and not d->isUsed()) {
             continue;
         }
 
@@ -3992,6 +3937,16 @@ void CodeGenerator::InsertArg(const CXXRecordDecl* stmt)
 
             // skip inserting an access specifier of our own, if there is a real one coming.
             if(not isa<AccessSpecDecl>(d)) {
+                // For the captures of a lambda mimic the behavior of GCC. They create an aggregate first and later flip
+                // it to a class:
+                // https://github.com/gcc-mirror/gcc/blob/62a80185db84f20f3efb05c81598bffa95bcd63d/gcc/cp/lambda.cc#L56
+                // https://github.com/gcc-mirror/gcc/blob/62a80185db84f20f3efb05c81598bffa95bcd63d/gcc/cp/lambda.cc#L121
+                if(isa<FieldDecl>(d) and isLambda) {
+                    // ToDo: Leave a comment in a potential -with-comments mode that the standard requires the captures
+                    // to be private?
+                    mOutputFormatHelper.Append(kwCppCommentStartSpace);
+                }
+
                 mOutputFormatHelper.AppendNewLine(AccessToStringWithColon(lastAccess));
             }
         }
@@ -4001,250 +3956,25 @@ void CodeGenerator::InsertArg(const CXXRecordDecl* stmt)
         formerKind = d->getKind();
     }
 
-    if(stmt->isLambda()) {
-        const LambdaCallerType lambdaCallerType = mLambdaStack.back().callerType();
-        const bool             ctorRequired{stmt->capture_size() or stmt->lambdaIsDefaultConstructibleAndAssignable()};
-
-        if(ctorRequired) {
-            if(AS_public != lastAccess) {
-                mOutputFormatHelper.AppendNewLine();
-                // XXX avoid diff in tests. AccessToStringWithColon add "public: " before there was no space.
-                const auto       pub{AccessToStringWithColon(AS_public)};
-                std::string_view p{pub};
-                p.remove_suffix(1);
-                mOutputFormatHelper.AppendNewLine(p);
-            }
-
-            if(stmt->lambdaIsDefaultConstructibleAndAssignable()) {
-                mOutputFormatHelper.Append(kwCppCommentStartSpace);
-
-                if(stmt->hasConstexprDefaultConstructor()) {
-                    mOutputFormatHelper.Append(kwCommentStart, kwConstExprSpace, kwCCommentEndSpace);
-                }
-            }
-
-            mOutputFormatHelper.Append(GetName(*stmt), "("sv);
+    // Only a default constructible, i.e. captureless, lambda has a defaulted default constructor
+    if(isLambda and stmt->lambdaIsDefaultConstructibleAndAssignable()) {
+        if(AS_public != lastAccess) {
+            mOutputFormatHelper.AppendNewLine();
+            mOutputFormatHelper.AppendNewLine(AccessToStringWithColon(AS_public, TrailingSpace::No));
         }
 
-        SmallVector<std::string, 5> ctorInitializerList{};
-        std::string                 ctorArguments{'{'};
-        OnceTrue                    firstCtorArgument{};
+        mOutputFormatHelper.Append(kwCppCommentStartSpace);
 
-        auto addToInits =
-            [&](std::string_view name, const FieldDecl* fd, bool isThis, const Expr* expr, bool /*useBraces*/) {
-                if(firstCtorArgument) {
-                } else {
-                    mOutputFormatHelper.Append(", "sv);
-                    ctorArguments.append(", "sv);
-                }
-
-                bool byConstRef{false};
-                auto fieldName{isThis ? kwInternalThis : name};
-                auto fieldDeclType{fd->getType()};
-                bool isMoved{};
-
-                std::string fname = StrCat("_"sv, name);
-
-                // Special handling for lambdas with init captures which contain a move. In such a case, copy the
-                // initial move statement and make the variable a &&.
-                if(const auto* cxxConstructExpr = dyn_cast_or_null<CXXConstructExpr>(expr);
-                   cxxConstructExpr and cxxConstructExpr->getConstructor()->isMoveConstructor()) {
-
-                    OutputFormatHelper             ofm{};
-                    LambdaInitCaptureCodeGenerator codeGenerator{ofm, mLambdaStack, name};
-
-                    if(cxxConstructExpr->getNumArgs()) {
-                        ForEachArg(cxxConstructExpr->arguments(),
-                                   [&](const auto& arg) { codeGenerator.InsertArg(arg); });
-                    }
-
-                    fieldDeclType = stmt->getASTContext().getRValueReferenceType(fieldDeclType);
-
-                    fname = ofm;
-
-                    // If it is not an object, check for other conditions why we take the variable by const &/&& in the
-                    // ctor
-                } else if(not fieldDeclType->isReferenceType() and not fieldDeclType->isAnyPointerType() and
-                          not fieldDeclType->isUndeducedAutoType()) {
-                    byConstRef                      = true;
-                    const auto* exprWithoutImpCasts = expr->IgnoreParenImpCasts();
-
-                    // treat a move of a primitive type
-                    if(exprWithoutImpCasts->isXValue()) {
-                        byConstRef = false;
-
-                        OutputFormatHelper             ofm{};
-                        LambdaInitCaptureCodeGenerator codeGenerator{ofm, mLambdaStack, name};
-                        codeGenerator.InsertArg(expr);
-
-                        fname = ofm;
-
-                    } else if(exprWithoutImpCasts
-                                  ->isPRValue()  // If we are looking at an rvalue (temporary) we need a const ref
-                              or exprWithoutImpCasts->getType().isConstQualified()  // If the captured variable is const
-                                                                                    // we can take it only by const ref
-
-                    ) {
-                        // this must go before adding the L or R-value reference, otherwise we get T& const instead of
-                        // const T&
-
-                        if(exprWithoutImpCasts->isPRValue() and isa<CXXBindTemporaryExpr>(exprWithoutImpCasts) and
-                           not exprWithoutImpCasts->getType().isConstQualified()) {
-                            fieldDeclType = stmt->getASTContext().getRValueReferenceType(fieldDeclType);
-                            EnableGlobalInsert(GlobalInserts::HeaderUtility);
-                            fname   = StrCat("std::move("sv, fname, ")"sv);
-                            isMoved = true;
-
-                        } else {
-                            fieldDeclType.addConst();
-                        }
-                    }
-
-                    if(exprWithoutImpCasts->isXValue()) {
-                        fieldDeclType = stmt->getASTContext().getRValueReferenceType(fieldDeclType);
-
-                    } else if(not isMoved) {
-                        fieldDeclType = stmt->getASTContext().getLValueReferenceType(fieldDeclType);
-                    }
-                }
-
-                const std::string_view elips{
-                    Ellipsis(isa_and_nonnull<PackExpansionType>(fieldDeclType->getPointeeType().getTypePtrOrNull()))};
-
-                // To avoid seeing the templates stuff from std::move (typename...) the canonical type is used here.
-                fieldDeclType = fieldDeclType.getCanonicalType();
-
-                ctorInitializerList.push_back(StrCat(fieldName, "{"sv, fname, elips, "}"sv));
-
-                if(not isThis and expr) {
-                    LAMBDA_SCOPE_HELPER(Decltype);
-                    OutputFormatHelper ofmLambdaInCtor{};
-                    ofmLambdaInCtor.SetIndent(indentAtInsertPosBeforeClass);
-                    CodeGenerator cgLambdaInCtor{ofmLambdaInCtor, LambdaInInitCapture::Yes};
-
-                    if(P0315Visitor dt{cgLambdaInCtor}; dt.TraverseStmt(const_cast<Expr*>(expr))) {
-
-                        OutputFormatHelper   ofm{};
-                        CodeGeneratorVariant codeGenerator{ofm, mLambdaStack, mProcessingPrimaryTemplate};
-
-                        if(const auto* ctorExpr = dyn_cast_or_null<CXXConstructExpr>(expr);
-                           ctorExpr and byConstRef and (1 == ctorExpr->getNumArgs())) {
-                            codeGenerator->InsertArg(ctorExpr->getArg(0));
-
-                        } else {
-                            codeGenerator->InsertArg(expr);
-                        }
-
-                        //        if(isa<PackExpansionType>(stmt->getDecl()->getType().getTypePtrOrNull())) {
-                        //            mOutputFormatHelper.Append(kwElipsisSpace);
-                        //        }
-
-                        ctorArguments.append(ofm);
-
-                    } else {
-                        OutputFormatHelper          ofm{};
-                        LambdaNameOnlyCodeGenerator ccg{ofm};
-                        ccg.InsertArg(expr);
-
-                        ctorArguments.append(ofm.GetString());
-
-                        mOutputFormatHelper.InsertAt(insertPosBeforeClass, ofmLambdaInCtor);
-                    }
-                } else {
-                    if(isThis and not fieldDeclType->isPointerType()) {
-                        ctorArguments.append("*"sv);
-                    }
-
-                    ctorArguments.append(name);
-                }
-
-                mOutputFormatHelper.Append(GetTypeNameAsParameter(fieldDeclType, StrCat("_"sv, name)));
-            };
-
-        llvm::DenseMap<const ValueDecl*, FieldDecl*> captures{};
-        FieldDecl*                                   thisCapture{};
-
-        stmt->getCaptureFields(captures, thisCapture);
-
-        // Check if it captures this
-        if(thisCapture) {
-            const auto* captureInit = mLambdaExpr->capture_init_begin();
-
-            addToInits(kwThis, thisCapture, true, *captureInit, false);
+        if(stmt->hasConstexprDefaultConstructor()) {
+            mOutputFormatHelper.AppendComment(kwConstExpr);
+            mOutputFormatHelper.Append(" "sv);
         }
 
-        // Find the corresponding capture in the DenseMap. The DenseMap seems to be change its order each time.
-        // Hence we use \c captures() to keep the order stable. While using \c Captures to generate the code as
-        // it carries the better type infos.
-        for(const auto& [c, cinit] : zip(mLambdaExpr->captures(), mLambdaExpr->capture_inits())) {
-            if(not c.capturesVariable()) {
-                continue;
-            }
-
-            const auto* capturedVar = c.getCapturedVar();
-            if(const auto* value = captures[capturedVar]) {
-                // Since C++20 lambdas can capture structured bindings
-                if(const auto* bindingDecl = dyn_cast_or_null<BindingDecl>(capturedVar)) {
-                    const auto* decompositionDecl = cast<DecompositionDecl>(bindingDecl->getDecomposedDecl());
-                    addToInits(GetName(*capturedVar),
-                               value,
-                               false,
-                               cinit,
-                               VarDecl::ListInit == decompositionDecl->getInitStyle());
-                    continue;
-                }
-
-                addToInits(GetName(*capturedVar),
-                           value,
-                           false,
-                           cinit,
-                           VarDecl::ListInit == dyn_cast_or_null<VarDecl>(capturedVar)->getInitStyle());
-            }
-        }
-
-        ctorArguments.append("}"sv);
-
-        // generate the ctor only if it is required, i.e. we have captures. This is in fact a trick to get
-        // compiling code out of it. The compiler itself does not generate a constructor in many many cases.
-        if(ctorRequired) {
-            mOutputFormatHelper.Append(")"sv);
-
-            if(stmt->lambdaIsDefaultConstructibleAndAssignable()) {
-                mOutputFormatHelper.AppendNewLine(kwSpaceEqualsDefault);
-
-            } else {
-                mOutputFormatHelper.AppendNewLine();
-
-                for(OnceTrue firstCtorInitializer{}; const auto& initializer : ctorInitializerList) {
-                    if(firstCtorInitializer) {
-                        mOutputFormatHelper.Append(": "sv);
-                    } else {
-                        mOutputFormatHelper.Append(", "sv);
-                    }
-
-                    mOutputFormatHelper.AppendNewLine(initializer);
-                }
-
-                mOutputFormatHelper.AppendNewLine("{}"sv);
-            }
-        }
-
-        // close the class scope
-        mOutputFormatHelper.CloseScope();
-
-        if(not is{lambdaCallerType}.any_of(LambdaCallerType::VarDecl,
-                                           LambdaCallerType::InitCapture,
-                                           LambdaCallerType::CallExpr,
-                                           LambdaCallerType::MemberCallExpr,
-                                           LambdaCallerType::TemplateHead,
-                                           LambdaCallerType::Decltype)) {
-            mOutputFormatHelper.Append(" "sv, GetLambdaName(*stmt), ctorArguments);
-        } else if(not is{lambdaCallerType}.any_of(LambdaCallerType::TemplateHead, LambdaCallerType::Decltype)) {
-            mLambdaStack.back().inits().append(ctorArguments);
-        }
-    } else {
-        mOutputFormatHelper.CloseScope(OutputFormatHelper::NoNewLineBefore::Yes);
+        mOutputFormatHelper.AppendNewLine(GetName(*stmt), "()"sv, kwSpaceEqualsDefault);
     }
+
+    // close the class scope
+    mOutputFormatHelper.CloseScope(OutputFormatHelper::NoNewLineBefore::Yes);
 
     if(GetInsightsOptions().UseShow2C) {
         mOutputFormatHelper.Append(" "sv, GetName(*stmt));
@@ -4598,6 +4328,13 @@ void CodeGenerator::InsertTemplateArgs(const ClassTemplateSpecializationDecl& cl
         InsertTemplateArgs(ar->arguments());
     } else {
         InsertTemplateArgs(clsTemplateSpe.getTemplateArgs());
+#if 0
+    if(const TypeSourceInfo* typeAsWritten = clsTemplateSpe.getTypeAsWritten()) {
+        const TemplateSpecializationType* tmplSpecType = cast<TemplateSpecializationType>(typeAsWritten->getType());
+        InsertTemplateArgs(*tmplSpecType);
+        } else {
+            InsertTemplateArgs(clsTemplateSpe.getTemplateArgs());
+#endif
     }
 }
 //-----------------------------------------------------------------------------
@@ -4806,17 +4543,91 @@ std::string_view CodeGenerator::GetBuiltinTypeSuffix(const BuiltinType::Kind& ki
 }
 //-----------------------------------------------------------------------------
 
-void CodeGenerator::HandleLambdaExpr(const LambdaExpr* lambda, LambdaHelper& lambdaHelper)
+void CodeGenerator::InsertArg(const LambdaExpr* stmt)
 {
-    OutputFormatHelper& outputFormatHelper = lambdaHelper.buffer();
+    const auto stackEmpty{mLambdaStack.empty()};  // If the stack is empty we have a IIFE
+    CONDITIONAL_LAMBDA_SCOPE_HELPER(LambdaExpr, stackEmpty);
+
+    LambdaHelper&       lambdaHelper{mLambdaStack.back()};
+    OutputFormatHelper& outputFormatHelper{lambdaHelper.buffer()};
+    const size_t        insertPosBeforeClass{outputFormatHelper.CurrentPos()};
+    const auto          indentAtInsertPosBeforeClass{outputFormatHelper.GetIndent()};
 
     outputFormatHelper.AppendNewLine();
-    LambdaCodeGenerator codeGenerator{outputFormatHelper, mLambdaStack, mProcessingPrimaryTemplate};
-    codeGenerator.mCapturedThisAsCopy = ranges::any_of(
-        lambda->captures(), [](auto& c) { return (c.capturesThis() and (c.getCaptureKind() == LCK_StarThis)); });
+    CodeGeneratorVariant codeGenerator{outputFormatHelper, mLambdaStack, mProcessingPrimaryTemplate};
+    codeGenerator->mLambdaExpr = stmt;
+    codeGenerator->InsertArg(stmt->getLambdaClass());
 
-    codeGenerator.mLambdaExpr = lambda;
-    codeGenerator.InsertArg(lambda->getLambdaClass());
+    if(lambdaHelper.insertName()) {
+        mOutputFormatHelper.Append(GetLambdaName(*stmt));
+    }
+
+    // type only discarding captures as this is a capture-less context
+    if(is{lambdaHelper.callerType()}.any_of(LambdaCallerType::Decltype, LambdaCallerType::DecltypeWithName)) {
+        return;
+    }
+
+    // Process the captures, transfer them to initializer for an aggregate init call.
+    OutputFormatHelper ctorArguments{};
+    ctorArguments.Append("{"sv);
+
+    // We have to process the captures even if the stack was previously empty and we will discard all the initializers,
+    // because one of the captures could contain another lambda.
+    if(const auto* recordDecl{stmt->getLambdaClass()}; not recordDecl->lambdaIsDefaultConstructibleAndAssignable()) {
+        OnceFalse                                    needsComma{};
+        llvm::DenseMap<const ValueDecl*, FieldDecl*> captures{};
+        FieldDecl*                                   _{};
+
+        recordDecl->getCaptureFields(captures, _);
+
+        // Find the corresponding capture in the DenseMap. The DenseMap seems to be change its order each time.
+        // Hence we use \c captures() to keep the order stable. While using \c Captures to generate the code as
+        // it carries the better type infos.
+        for(const auto& [c, initExpr] : zip(stmt->captures(), stmt->capture_inits())) {
+            if(not c.capturesVariable() and not c.capturesThis()) {
+                // that can be a VLA
+                continue;
+            }
+
+            ctorArguments.AppendComma(needsComma);
+
+            LAMBDA_SCOPE_HELPER(Decltype);
+            OutputFormatHelper ofmLambdaInCtor{};
+            ofmLambdaInCtor.SetIndent(indentAtInsertPosBeforeClass);
+            CodeGenerator      cgLambdaInCtor{ofmLambdaInCtor};
+            OutputFormatHelper ofm{};
+
+            if(P0315Visitor dt{cgLambdaInCtor}; dt.TraverseStmt(const_cast<Expr*>(initExpr))) {
+                CodeGeneratorVariant codeGenerator{ofm, mLambdaStack, mProcessingPrimaryTemplate};
+
+                if(const auto* ctorExpr = dyn_cast_or_null<CXXConstructExpr>(initExpr);
+                   ctorExpr and (1 == ctorExpr->getNumArgs())) {
+                    codeGenerator->InsertArg(ctorExpr->getArg(0));
+
+                } else {
+                    codeGenerator->InsertArg(initExpr);
+                }
+
+            } else {
+                LambdaNameOnlyCodeGenerator ccg{ofm};
+                ccg.InsertArg(initExpr);
+
+                outputFormatHelper.InsertAt(insertPosBeforeClass, ofmLambdaInCtor);
+            }
+
+            ctorArguments.Append(ofm);
+
+            if(c.capturesVariable() and c.getCapturedVar()->isParameterPack()) {
+                ctorArguments.Append(kwElipsis);
+            }
+        }
+    }
+
+    ctorArguments.Append("}"sv);
+
+    if(not stackEmpty) {
+        mOutputFormatHelper.Append(ctorArguments);
+    }
 }
 //-----------------------------------------------------------------------------
 
@@ -5310,17 +5121,6 @@ void StructuredBindingsCodeGenerator::InsertArg(const DeclRefExpr* stmt)
         mOutputFormatHelper.Append(mVarName);
     } else {
         InsertTemplateArgs(*stmt);
-    }
-}
-//-----------------------------------------------------------------------------
-
-void LambdaCodeGenerator::InsertArg(const CXXThisExpr*)
-{
-    if(mCapturedThisAsCopy) {
-        mOutputFormatHelper.Append("(&"sv, kwInternalThis, ")"sv);
-
-    } else {
-        mOutputFormatHelper.Append(kwInternalThis);
     }
 }
 //-----------------------------------------------------------------------------

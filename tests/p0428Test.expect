@@ -24,8 +24,7 @@ class __lambda_3_10
   }
   
   public:
-  // /*constexpr */ __lambda_3_10() = default;
-  
+  // /* constexpr */ __lambda_3_10() = default;
 };
 
 __lambda_3_10 l = __lambda_3_10{};

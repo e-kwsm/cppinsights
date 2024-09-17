@@ -20,8 +20,7 @@ int main()
       __lambda_3_3{}.operator()();
     }
     
-    
-  } __lambda_3_3{};
+  };
   
   return 0;
 }

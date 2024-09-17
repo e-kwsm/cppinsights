@@ -24,8 +24,7 @@ struct Test
     
     
     public:
-    // /*constexpr */ __lambda_5_13() = default;
-    
+    // /* constexpr */ __lambda_5_13() = default;
   };
   
   __lambda_5_13 a;
@@ -50,8 +49,7 @@ struct Test
     }
     
     public: 
-    // /*constexpr */ __lambda_7_29() = default;
-    
+    // /* constexpr */ __lambda_7_29() = default;
   };
   
   void (*fp)() = (+__lambda_7_29{}.operator __lambda_7_29::retType_7_29());

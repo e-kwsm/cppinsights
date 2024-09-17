@@ -19,16 +19,12 @@ class EventContainer
       std::cout.operator<<(__this->val);
     }
     
-    private: 
+    // private: 
     EventContainer * __this;
     public: 
     // inline /*constexpr */ __lambda_6_43(const __lambda_6_43 &) noexcept = default;
     // inline /*constexpr */ __lambda_6_43(__lambda_6_43 &&) noexcept = default;
-    __lambda_6_43(EventContainer * _this)
-    : __this{_this}
-    {}
-    
-  } __lambda_6_43{this};
+  };
   
   // inline constexpr EventContainer() noexcept(false) = default;
 };

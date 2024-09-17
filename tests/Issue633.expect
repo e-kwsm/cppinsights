@@ -21,17 +21,11 @@ int main()
           return k;
         }
         
-        private: 
+        // private: 
         std::tuple_element<0, std::pair<const int, int> >::type k;
-        
-        public:
-        __lambda_9_8(const int & _k)
-        : k{_k}
-        {}
-        
-      } __lambda_9_8{k};
+      };
       
-      __lambda_9_8.operator()();
+      __lambda_9_8{k}.operator()();
     }
     
   }

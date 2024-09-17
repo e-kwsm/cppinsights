@@ -12,7 +12,6 @@ class __lambda_1_10
   {
     return __lambda_1_10{}.operator()<type_parameter_0_0>(__param0);
   }
-  
 };
 
 __lambda_1_10 f = __lambda_1_10{};

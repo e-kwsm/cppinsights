@@ -16,14 +16,8 @@ struct A
         return ++i;
       }
       
-      private: 
+      // private: 
       int & i;
-      
-      public:
-      __lambda_10_38(int & _i)
-      : i{_i}
-      {}
-      
     };
     
     std::generate(&this->v[0], &this->v[10], __lambda_10_38{i});
@@ -47,14 +41,8 @@ struct B
         return ++i;
       }
       
-      private: 
+      // private: 
       int & i;
-      
-      public:
-      __lambda_22_38(int & _i)
-      : i{_i}
-      {}
-      
     };
     
     std::generate(&this->v[0], &this->v[10], __lambda_22_38{i});

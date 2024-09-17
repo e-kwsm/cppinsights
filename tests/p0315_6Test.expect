@@ -19,8 +19,7 @@ class __lambda_3_47
   }
   
   public: 
-  // /*constexpr */ __lambda_3_47() = default;
-  
+  // /* constexpr */ __lambda_3_47() = default;
 };
 
 using FuncPtr_3 = auto (*)() -> void;
@@ -48,8 +47,7 @@ class __lambda_5_16
   
   
   public:
-  // /*constexpr */ __lambda_5_16() = default;
-  
+  // /* constexpr */ __lambda_5_16() = default;
 };
 
 using FuncPtr_5 = void (*)();

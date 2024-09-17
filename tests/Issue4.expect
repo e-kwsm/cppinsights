@@ -14,14 +14,8 @@ int main()
       printf("a: %c\n", static_cast<int>(uuu));
     }
     
-    private: 
+    // private: 
     char uuu;
-    
-    public:
-    __lambda_9_11(const char & _uuu)
-    : uuu{_uuu}
-    {}
-    
   };
   
   __lambda_9_11 && l = __lambda_9_11{arr[1]};

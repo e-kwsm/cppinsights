@@ -22,8 +22,7 @@ class __lambda_5_28
   
   
   public:
-  // /*constexpr */ __lambda_5_28() = default;
-  
+  // /* constexpr */ __lambda_5_28() = default;
 };
 
 static std::array<__lambda_5_28, 2> ff();
@@ -56,8 +55,7 @@ class __lambda_11_27
   
   
   public:
-  // /*constexpr */ __lambda_11_27() = default;
-  
+  // /* constexpr */ __lambda_11_27() = default;
 };
 
 static Container<__lambda_11_27, 2> c();
@@ -84,8 +82,7 @@ class __lambda_13_17
   
   
   public:
-  // /*constexpr */ __lambda_13_17() = default;
-  
+  // /* constexpr */ __lambda_13_17() = default;
 };
 
 static __lambda_13_17 & f();
@@ -112,8 +109,7 @@ class __lambda_15_24
   
   
   public:
-  // /*constexpr */ __lambda_15_24() = default;
-  
+  // /* constexpr */ __lambda_15_24() = default;
 };
 
 static void h(__lambda_15_24 *)
@@ -142,8 +138,7 @@ class __lambda_17_24
   
   
   public:
-  // /*constexpr */ __lambda_17_24() = default;
-  
+  // /* constexpr */ __lambda_17_24() = default;
 };
 
 
@@ -169,8 +164,7 @@ class __lambda_17_43
   
   
   public:
-  // /*constexpr */ __lambda_17_43() = default;
-  
+  // /* constexpr */ __lambda_17_43() = default;
 };
 
 static void w(__lambda_17_24 *, __lambda_17_43 &)

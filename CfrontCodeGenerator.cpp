@@ -83,22 +83,19 @@ CodeGeneratorVariant::CodeGenerators::CodeGenerators(OutputFormatHelper&        
                                                      CodeGenerator::ProcessingPrimaryTemplate processingPrimaryTemplate)
 {
     if(GetInsightsOptions().UseShow2C) {
-        new(&cfcg) CfrontCodeGenerator{
-            _outputFormatHelper, lambdaStack, CodeGenerator::LambdaInInitCapture::No, processingPrimaryTemplate};
+        new(&cfcg) CfrontCodeGenerator{_outputFormatHelper, lambdaStack, processingPrimaryTemplate};
     } else {
-        new(&cg) CodeGenerator{
-            _outputFormatHelper, lambdaStack, CodeGenerator::LambdaInInitCapture::No, processingPrimaryTemplate};
+        new(&cg) CodeGenerator{_outputFormatHelper, lambdaStack, processingPrimaryTemplate};
     }
 }
 //-----------------------------------------------------------------------------
 
-CodeGeneratorVariant::CodeGenerators::CodeGenerators(OutputFormatHelper&                _outputFormatHelper,
-                                                     CodeGenerator::LambdaInInitCapture lambdaInitCapture)
+CodeGeneratorVariant::CodeGenerators::CodeGenerators(OutputFormatHelper& _outputFormatHelper)
 {
     if(GetInsightsOptions().UseShow2C) {
-        new(&cfcg) CfrontCodeGenerator{_outputFormatHelper, lambdaInitCapture};
+        new(&cfcg) CfrontCodeGenerator{_outputFormatHelper};
     } else {
-        new(&cg) CodeGenerator{_outputFormatHelper, lambdaInitCapture};
+        new(&cg) CodeGenerator{_outputFormatHelper};
     }
 }
 //-----------------------------------------------------------------------------

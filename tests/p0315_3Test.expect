@@ -22,8 +22,7 @@ namespace Test
     
     
     public:
-    // /*constexpr */ __lambda_7_5() = default;
-    
+    // /* constexpr */ __lambda_7_5() = default;
   };
   
   
@@ -48,8 +47,7 @@ namespace Test
     
     
     public:
-    // /*constexpr */ __lambda_9_14() = default;
-    
+    // /* constexpr */ __lambda_9_14() = default;
   };
   
   template<typename T>

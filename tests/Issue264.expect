@@ -22,7 +22,6 @@ class __lambda_2_10
   {
     return __lambda_2_10{}.operator()<type_parameter_0_0... >(i...);
   }
-  
 };
 
 __lambda_2_10 f = __lambda_2_10{};
@@ -50,7 +49,6 @@ class __lambda_3_10
   {
     return __lambda_3_10{}.operator()<type_parameter_0_0... >(i...);
   }
-  
 };
 
 __lambda_3_10 g = __lambda_3_10{};

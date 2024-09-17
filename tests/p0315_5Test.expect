@@ -25,8 +25,7 @@ class __lambda_7_32
   }
   
   public: 
-  // /*constexpr */ __lambda_7_32() = default;
-  
+  // /* constexpr */ __lambda_7_32() = default;
 };
 
 static LambdaInNTTP<&__lambda_7_32::__invoke> lambdaInNTTP();

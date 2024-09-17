@@ -16,7 +16,6 @@ class __lambda_8_23
   {
     return __lambda_8_23{}.operator()<type_parameter_1_0>(x);
   }
-  
 };
 
 
@@ -43,7 +42,6 @@ class __lambda_8_23
   {
     return __lambda_8_23{}.operator()<type_parameter_0_0>(x);
   }
-  
 };
 
 constexpr const auto func = __lambda_8_23{};
@@ -67,7 +65,6 @@ class __lambda_11_29
   {
     return __lambda_11_29{}.operator()<type_parameter_1_0>(x);
   }
-  
 };
 
 
@@ -94,7 +91,6 @@ class __lambda_11_29
   {
     return __lambda_11_29{}.operator()<type_parameter_0_0>(x);
   }
-  
 };
 
 constexpr const auto funcBraced = __lambda_11_29{};

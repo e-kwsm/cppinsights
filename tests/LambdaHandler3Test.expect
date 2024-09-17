@@ -26,14 +26,8 @@ int main()
       return x + y;
     }
     
-    private: 
+    // private: 
     int & y;
-    
-    public:
-    __lambda_10_13(int & _y)
-    : y{_y}
-    {}
-    
   };
   
   return Is(__lambda_10_13{y});

@@ -11,18 +11,14 @@ void func(const std::basic_string<char, std::char_traits<char>, std::allocator<c
       return arg.size();
     }
     
-    private: 
+    // private: 
     const std::basic_string<char, std::char_traits<char>, std::allocator<char> > arg;
     public: 
     // inline __lambda_5_11 & operator=(const __lambda_5_11 &) /* noexcept */ = delete;
     // inline ~__lambda_5_11() noexcept = default;
-    __lambda_5_11(const std::basic_string<char, std::char_traits<char>, std::allocator<char> > & _arg)
-    : arg{_arg}
-    {}
-    
-  } __lambda_5_11{arg};
+  };
   
-  unsigned long s = __lambda_5_11.operator()();
+  unsigned long s = __lambda_5_11{arg}.operator()();
 }
 
 int main()

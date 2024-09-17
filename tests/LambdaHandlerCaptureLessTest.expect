@@ -44,7 +44,6 @@ int main()
     }
     #endif
     
-    
   };
   
   using FuncPtr_4 = int (*)(int, char);

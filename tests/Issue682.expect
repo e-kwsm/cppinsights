@@ -27,10 +27,9 @@ class __lambda_5_17
     return __lambda_5_17{}.operator()();
   }
   
-  
-} __lambda_5_17{};
+};
 
-/* PASSED: static_assert(__lambda_5_17.operator()()); */
+/* PASSED: static_assert(__lambda_5_17{}.operator()()); */
 
 int main()
 {

@@ -67,7 +67,6 @@ decltype(auto) test(T && value)
       return __lambda_13_4{}.operator()(value);
     }
     
-    
   };
   
   
@@ -92,7 +91,6 @@ decltype(auto) test(T && value)
       return __lambda_14_4{}.operator()(i);
     }
     
-    
   };
   
   
@@ -111,7 +109,6 @@ decltype(auto) test(T && value)
     {
       return __lambda_15_4{}.operator()<type_parameter_1_0>(a);
     }
-    
   };
   
   return match(value, __lambda_13_4{}, __lambda_14_4{}, __lambda_15_4{});
@@ -143,7 +140,6 @@ int test<int>(int && value)
       return __lambda_13_4{}.operator()(value);
     }
     
-    
   };
   
   
@@ -168,7 +164,6 @@ int test<int>(int && value)
       return __lambda_14_4{}.operator()(i);
     }
     
-    
   };
   
   
@@ -187,7 +182,6 @@ int test<int>(int && value)
     {
       return __lambda_15_4{}.operator()<type_parameter_0_0>(a);
     }
-    
   };
   
   return match(value, __lambda_13_4{}, __lambda_14_4{}, __lambda_15_4{});
@@ -221,7 +215,6 @@ int test<const char (&)[3]>(const char (&value)[3])
       return __lambda_13_4{}.operator()(value);
     }
     
-    
   };
   
   
@@ -246,7 +239,6 @@ int test<const char (&)[3]>(const char (&value)[3])
       return __lambda_14_4{}.operator()(i);
     }
     
-    
   };
   
   
@@ -265,7 +257,6 @@ int test<const char (&)[3]>(const char (&value)[3])
     {
       return __lambda_15_4{}.operator()<type_parameter_0_0>(a);
     }
-    
   };
   
   return match(value, __lambda_13_4{}, __lambda_14_4{}, __lambda_15_4{});
@@ -299,7 +290,6 @@ int test<std::basic_string<char, std::char_traits<char>, std::allocator<char> > 
       return __lambda_13_4{}.operator()(value);
     }
     
-    
   };
   
   
@@ -324,7 +314,6 @@ int test<std::basic_string<char, std::char_traits<char>, std::allocator<char> > 
       return __lambda_14_4{}.operator()(i);
     }
     
-    
   };
   
   
@@ -343,7 +332,6 @@ int test<std::basic_string<char, std::char_traits<char>, std::allocator<char> > 
     {
       return __lambda_15_4{}.operator()<type_parameter_0_0>(a);
     }
-    
   };
   
   return match(value, __lambda_13_4{}, __lambda_14_4{}, __lambda_15_4{});
@@ -377,7 +365,6 @@ int test<float>(float && value)
       return __lambda_13_4{}.operator()(value);
     }
     
-    
   };
   
   
@@ -402,7 +389,6 @@ int test<float>(float && value)
       return __lambda_14_4{}.operator()(i);
     }
     
-    
   };
   
   
@@ -421,7 +407,6 @@ int test<float>(float && value)
     {
       return __lambda_15_4{}.operator()<type_parameter_0_0>(a);
     }
-    
   };
   
   return match(value, __lambda_13_4{}, __lambda_14_4{}, __lambda_15_4{});

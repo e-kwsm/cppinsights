@@ -21,10 +21,9 @@ int main()
         __lambda_3_14{}.operator()();
       }
       
-      
-    } __lambda_3_14{};
+    };
     
-    __lambda_3_14.operator()();
+    __lambda_3_14{}.operator()();
   } 
   
   for(; false; ) {
@@ -48,10 +47,9 @@ int main()
         __lambda_5_18{}.operator()();
       }
       
-      
-    } __lambda_5_18{};
+    };
     
-    __lambda_5_18.operator()();
+    __lambda_5_18{}.operator()();
   }
   
   while(false) {
@@ -75,10 +73,9 @@ int main()
         __lambda_7_18{}.operator()();
       }
       
-      
-    } __lambda_7_18{};
+    };
     
-    __lambda_7_18.operator()();
+    __lambda_7_18{}.operator()();
   }
   
   return 0;

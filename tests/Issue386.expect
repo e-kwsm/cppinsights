@@ -21,16 +21,9 @@ namespace tnt
           {
             ((__this->data[I] = std::exchange(rhs.data[I], U(0))) , ...);
           }
-          private: 
+          // private: 
           vector<T, N> * __this;
           auto rhs;
-          
-          public:
-          __lambda_15_17(vector<T, N> * _this, auto _rhs)
-          : __this{_this}
-          , rhs{_rhs}
-          {}
-          
         };
         
         __lambda_15_17{this, std::move(rhs)}(std::make_index_sequence<S>{});
