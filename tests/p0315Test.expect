@@ -25,8 +25,7 @@ namespace A
     
     
     public:
-    // /*constexpr */ __lambda_6_33() = default;
-    
+    // /* constexpr */ __lambda_6_33() = default;
   };
   
   template<class F = __lambda_6_33>

@@ -10,14 +10,8 @@ void Test()
       int Dim[3];
     }
     
-    private: 
+    // private: 
     const int Size;
-    
-    public:
-    __lambda_4_18(const int & _Size)
-    : Size{_Size}
-    {}
-    
   };
   
   __lambda_4_18 Lambda = __lambda_4_18{Size};

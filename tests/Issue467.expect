@@ -24,7 +24,6 @@ int main()
       __lambda_5_14{}.operator()();
     }
     
-    
   };
   
   __lambda_5_14 l = __lambda_5_14{};

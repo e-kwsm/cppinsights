@@ -1,7 +1,6 @@
 int main()
 {
-    
-      
+        
   class __lambda_2_8
   {
     public: 
@@ -23,8 +22,8 @@ int main()
     
     public: 
     // inline /*constexpr */ __lambda_2_8 & operator=(const __lambda_2_8 &) /* noexcept */ = delete;
-    
   };
+  
   
   class __lambda_2_3
   {
@@ -33,15 +32,11 @@ int main()
     {
     }
     
-    private: 
+    // private: 
     __lambda_2_8 var;
     public: 
     // inline /*constexpr */ __lambda_2_3 & operator=(const __lambda_2_3 &) /* noexcept */ = delete;
-    __lambda_2_3(const __lambda_2_8 & _var)
-    : var{_var}
-    {}
-    
-  } __lambda_2_3{__lambda_2_8{}};
+  };
   
   return 0;
 }

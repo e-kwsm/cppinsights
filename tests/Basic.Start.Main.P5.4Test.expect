@@ -25,9 +25,8 @@ int main(int argc, const char ** argv)
       return __lambda_5_13{}.operator()();
     }
     
-    
-  } __lambda_5_13{};
+  };
   
-  int x = __lambda_5_13.operator()();
+  int x = __lambda_5_13{}.operator()();
   return 0;
 }

@@ -9,14 +9,8 @@ int main()
     {
     }
     
-    private: 
+    // private: 
     char uuu;
-    
-    public:
-    __lambda_4_11(const char & _uuu)
-    : uuu{_uuu}
-    {}
-    
   };
   
   __lambda_4_11 && l = __lambda_4_11{a};

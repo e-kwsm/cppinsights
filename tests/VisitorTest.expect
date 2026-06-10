@@ -42,7 +42,6 @@ int main()
     
     // inline /*constexpr */ __lambda_8_7 & operator=(const __lambda_8_7 &) /* noexcept */ = delete;
     // inline /*constexpr */ __lambda_8_7(__lambda_8_7 &&) noexcept = default;
-    
   };
   
   
@@ -55,7 +54,6 @@ int main()
     
     // inline /*constexpr */ __lambda_9_7 & operator=(const __lambda_9_7 &) /* noexcept */ = delete;
     // inline /*constexpr */ __lambda_9_7(__lambda_9_7 &&) noexcept = default;
-    
   };
   
   visitor<__lambda_8_7, __lambda_9_7> my_visitor = visitor{__lambda_8_7(__lambda_8_7{}), __lambda_9_7(__lambda_9_7{})};

@@ -8,14 +8,8 @@ class __lambda_4_15
     ++s2;
   }
   
-  private: 
+  // private: 
   int s2;
-  
-  public:
-  __lambda_4_15(int & _s2)
-  : s2{_s2}
-  {}
-  
 };
 
 __lambda_4_15 noSean = __lambda_4_15{x};

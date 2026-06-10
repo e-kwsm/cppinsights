@@ -99,6 +99,7 @@ consteval std::string_view KwWithNoSpace(std::string_view kw)
     return kw;
 }
 
+inline constexpr std::string_view kwConstExpr{KW_CONSTEXPR};
 inline constexpr std::string_view kwNoexcept{KW_NOEXCEPT};
 inline constexpr std::string_view kwRequires{KW_REQUIRES};
 inline constexpr std::string_view kwPublic{KW_PUBLIC};

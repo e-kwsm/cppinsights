@@ -21,7 +21,6 @@ void f()
     {
       return __lambda_1_26{}.operator()<type_parameter_0_0>(container);
     }
-    
   };
   
   __lambda_1_26 lambda = __lambda_1_26{};

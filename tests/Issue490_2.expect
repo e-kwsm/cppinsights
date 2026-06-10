@@ -21,8 +21,7 @@ class __lambda_3_20
   
   
   public:
-  // /*constexpr */ __lambda_3_20() = default;
-  
+  // /* constexpr */ __lambda_3_20() = default;
 };
 
 using x = __lambda_3_20;

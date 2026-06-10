@@ -21,7 +21,6 @@ int main()
       return __lambda_8_26{}.operator()(a, b);
     }
     
-    
   };
   
   using FuncPtr_8 = int (*)(int, char);

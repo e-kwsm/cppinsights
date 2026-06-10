@@ -23,8 +23,7 @@ int main()
       __lambda_5_3{}.operator()();
     }
     
-    
-  } __lambda_5_3{};
+  };
   
     
   class __lambda_5_33
@@ -47,9 +46,8 @@ int main()
       __lambda_5_33{}.operator()();
     }
     
-    
-  } __lambda_5_33{};
+  };
   
-  __lambda_5_3.operator()() , __lambda_5_33.operator()();
+  __lambda_5_3{}.operator()() , __lambda_5_33{}.operator()();
   return 0;
 }

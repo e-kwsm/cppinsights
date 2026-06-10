@@ -14,14 +14,8 @@ class Bar
         printf("%d\n", __this->a);
       }
       
-      private: 
+      // private: 
       Bar * __this;
-      
-      public:
-      __lambda_8_18(Bar * _this)
-      : __this{_this}
-      {}
-      
     };
     
     __lambda_8_18 x = __lambda_8_18{this};
@@ -44,14 +38,8 @@ int main()
       printf("%d\n", foo);
     }
     
-    private: 
+    // private: 
     int & foo;
-    
-    public:
-    __lambda_20_19(int & _foo)
-    : foo{_foo}
-    {}
-    
   };
   
   __lambda_20_19 lambda = __lambda_20_19{foo};
@@ -77,7 +65,6 @@ int main()
       __lambda_24_20{}.operator()();
     }
     
-    
   };
   
   __lambda_24_20 lambda2 = __lambda_24_20{};
@@ -92,14 +79,8 @@ int main()
       return foo;
     }
     
-    private: 
+    // private: 
     int & foo;
-    
-    public:
-    __lambda_28_20(int & _foo)
-    : foo{_foo}
-    {}
-    
   };
   
   __lambda_28_20 lambda3 = __lambda_28_20{foo};
@@ -114,14 +95,8 @@ int main()
       return foo + x;
     }
     
-    private: 
+    // private: 
     int & foo;
-    
-    public:
-    __lambda_32_20(int & _foo)
-    : foo{_foo}
-    {}
-    
   };
   
   __lambda_32_20 lambda4 = __lambda_32_20{foo};
@@ -135,14 +110,8 @@ int main()
       return foo + x;
     }
     
-    private: 
+    // private: 
     int & foo;
-    
-    public:
-    __lambda_34_20(int & _foo)
-    : foo{_foo}
-    {}
-    
   };
   
   __lambda_34_20 lambda5 = __lambda_34_20{foo};
@@ -156,14 +125,8 @@ int main()
       return (foo + x) + b;
     }
     
-    private: 
+    // private: 
     int & foo;
-    
-    public:
-    __lambda_36_20(int & _foo)
-    : foo{_foo}
-    {}
-    
   };
   
   __lambda_36_20 lambda6 = __lambda_36_20{foo};
@@ -187,14 +150,8 @@ int main()
     }
     #endif
     
-    private: 
+    // private: 
     int & foo;
-    
-    public:
-    __lambda_38_20(int & _foo)
-    : foo{_foo}
-    {}
-    
   };
   
   __lambda_38_20 lambda7 = __lambda_38_20{foo};
@@ -209,14 +166,8 @@ int main()
       printf("%d\n", foo + x);
       return (foo + x) + b;
     }
-    private: 
+    // private: 
     int & foo;
-    
-    public:
-    __lambda_41_21(int & _foo)
-    : foo{_foo}
-    {}
-    
   };
   
   __lambda_41_21 lambda71 = __lambda_41_21{foo};
@@ -240,14 +191,8 @@ int main()
     }
     #endif
     
-    private: 
+    // private: 
     int & foo;
-    
-    public:
-    __lambda_43_21(int & _foo)
-    : foo{_foo}
-    {}
-    
   };
   
   __lambda_43_21 lambda73 = __lambda_43_21{foo};
@@ -262,16 +207,9 @@ int main()
       return (foo + x) + bb;
     }
     
-    private: 
+    // private: 
     int foo;
     int b;
-    
-    public:
-    __lambda_46_20(int & _foo, int & _b)
-    : foo{_foo}
-    , b{_b}
-    {}
-    
   };
   
   __lambda_46_20 lambda8 = __lambda_46_20{foo, b};
@@ -285,16 +223,9 @@ int main()
       return (foo + x) + bb;
     }
     
-    private: 
+    // private: 
     int foo;
     int b;
-    
-    public:
-    __lambda_48_20(int & _foo, int & _b)
-    : foo{_foo}
-    , b{_b}
-    {}
-    
   };
   
   __lambda_48_20 lambda9 = __lambda_48_20{foo, b};

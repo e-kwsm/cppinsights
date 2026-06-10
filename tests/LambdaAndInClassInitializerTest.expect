@@ -53,15 +53,9 @@ class EventContainer
       __this->val;
     }
     
-    private: 
+    // private: 
     EventContainer * __this;
-    
-    public:
-    __lambda_17_38(EventContainer * _this)
-    : __this{_this}
-    {}
-    
-  } __lambda_17_38{this};
+  };
   
   // inline constexpr EventContainer() noexcept(false) = default;
 };

@@ -31,7 +31,6 @@ int main()
     {
       return __lambda_12_26{}.operator()<type_parameter_0_0>(str);
     }
-    
   };
   
   std::__wrap_iter<std::basic_string<char, std::char_traits<char>, std::allocator<char> > *> it = std::find_if(std::begin(v), std::end(v), __lambda_12_26{});

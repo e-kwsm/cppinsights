@@ -22,10 +22,9 @@ int main()
         return __lambda_3_14{}.operator()();
       }
       
-      
-    } __lambda_3_14{};
+    };
     
-    int x = __lambda_3_14.operator()();
+    int x = __lambda_3_14{}.operator()();
             
     class __lambda_3_34
     {
@@ -47,10 +46,9 @@ int main()
         return __lambda_3_34{}.operator()();
       }
       
-      
-    } __lambda_3_34{};
+    };
     
-    int y = __lambda_3_34.operator()();
+    int y = __lambda_3_34{}.operator()();
             
     class __lambda_3_53
     {
@@ -72,10 +70,9 @@ int main()
         return __lambda_3_53{}.operator()();
       }
       
-      
-    } __lambda_3_53{};
+    };
     
-    int z = __lambda_3_53.operator()();
+    int z = __lambda_3_53{}.operator()();
     if(true) {
     } 
     

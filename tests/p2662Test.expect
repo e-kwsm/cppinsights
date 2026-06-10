@@ -46,11 +46,10 @@ class __lambda_12_12
   }
   
   public:
-  // /*constexpr */ __lambda_12_12() = default;
-  
-} __lambda_12_12{};
+  // /* constexpr */ __lambda_12_12() = default;
+};
 
-int res = __lambda_12_12.operator()(0, 3.1400000000000001, 'c');
+int res = __lambda_12_12{}.operator()(0, 3.1400000000000001, 'c');
 
 int main()
 {

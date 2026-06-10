@@ -35,15 +35,9 @@ void test(X x)
       x.ff<int, int, double>(17, 2, 55.5);
     }
     
-    private: 
+    // private: 
     X & x;
-    
-    public:
-    __lambda_10_5(X & _x)
-    : x{_x}
-    {}
-    
-  } __lambda_10_5{x};
+  };
   
-  __lambda_10_5.operator()();
+  __lambda_10_5{x}.operator()();
 }

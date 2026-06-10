@@ -21,9 +21,8 @@ int main()
       return __lambda_3_13{}.operator()();
     }
     
-    
-  } __lambda_3_13{};
+  };
   
-  int x = __lambda_3_13.operator()();
+  int x = __lambda_3_13{}.operator()();
   return 0;
 }

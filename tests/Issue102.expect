@@ -411,7 +411,6 @@ decltype(auto) test(T && value)
       return __lambda_73_4{}.operator()(value);
     }
     
-    
   };
   
   
@@ -436,7 +435,6 @@ decltype(auto) test(T && value)
       return __lambda_74_4{}.operator()(i);
     }
     
-    
   };
   
   
@@ -455,7 +453,6 @@ decltype(auto) test(T && value)
     {
       return __lambda_75_4{}.operator()<type_parameter_1_0>(a);
     }
-    
   };
   
   return match(value, __lambda_73_4{}, __lambda_74_4{}, __lambda_75_4{});
@@ -487,7 +484,6 @@ int test<int>(int && value)
       return __lambda_73_4{}.operator()(value);
     }
     
-    
   };
   
   
@@ -512,7 +508,6 @@ int test<int>(int && value)
       return __lambda_74_4{}.operator()(i);
     }
     
-    
   };
   
   
@@ -531,7 +526,6 @@ int test<int>(int && value)
     {
       return __lambda_75_4{}.operator()<type_parameter_0_0>(a);
     }
-    
   };
   
   return match(value, __lambda_73_4{}, __lambda_74_4{}, __lambda_75_4{});
@@ -565,7 +559,6 @@ int test<const char (&)[3]>(const char (&value)[3])
       return __lambda_73_4{}.operator()(value);
     }
     
-    
   };
   
   
@@ -589,7 +582,6 @@ int test<const char (&)[3]>(const char (&value)[3])
     {
       return __lambda_74_4{}.operator()(i);
     }
-    
     
   };
   
@@ -619,7 +611,6 @@ int test<const char (&)[3]>(const char (&value)[3])
     {
       return __lambda_75_4{}.operator()<type_parameter_0_0>(a);
     }
-    
   };
   
   return match(value, __lambda_73_4{}, __lambda_74_4{}, __lambda_75_4{});
@@ -653,7 +644,6 @@ std::basic_string<char, std::char_traits<char>, std::allocator<char> > test<std:
       return __lambda_73_4{}.operator()(value);
     }
     
-    
   };
   
   
@@ -678,7 +668,6 @@ std::basic_string<char, std::char_traits<char>, std::allocator<char> > test<std:
       return __lambda_74_4{}.operator()(i);
     }
     
-    
   };
   
   
@@ -697,7 +686,6 @@ std::basic_string<char, std::char_traits<char>, std::allocator<char> > test<std:
     {
       return __lambda_75_4{}.operator()<type_parameter_0_0>(a);
     }
-    
   };
   
   return match(value, __lambda_73_4{}, __lambda_74_4{}, __lambda_75_4{});

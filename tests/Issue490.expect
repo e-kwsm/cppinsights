@@ -21,8 +21,7 @@ class __lambda_3_24
   
   
   public:
-  // /*constexpr */ __lambda_3_24() = default;
-  
+  // /* constexpr */ __lambda_3_24() = default;
 };
 
 __lambda_3_24 foo();

@@ -25,8 +25,7 @@ void f()
     }
     
     public: 
-    // /*constexpr */ __lambda_10_34() = default;
-    
+    // /* constexpr */ __lambda_10_34() = default;
   };
   
   std::priority_queue<int, std::vector<int, std::allocator<int> >, __lambda_10_34> min_heap = std::priority_queue<int, std::vector<int, std::allocator<int> >, __lambda_10_34>();

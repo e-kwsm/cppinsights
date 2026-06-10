@@ -25,7 +25,6 @@ int main()
       return __lambda_8_57{}.operator()(fir, sec);
     }
     
-    
   };
   
   int fak = std::accumulate(myVec.begin(), myVec.end(), 1, __lambda_8_57{});

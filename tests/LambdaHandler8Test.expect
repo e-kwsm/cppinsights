@@ -25,14 +25,8 @@ int get(int & v)
       return v;
     }
     
-    private: 
+    // private: 
     int & v;
-    
-    public:
-    __lambda_9_18(int & _v)
-    : v{_v}
-    {}
-    
   };
   
   int x = Test(__lambda_9_18{v});

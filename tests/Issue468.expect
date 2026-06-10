@@ -21,8 +21,7 @@ class __lambda_3_29
   
   
   public:
-  // /*constexpr */ __lambda_3_29() = default;
-  
+  // /* constexpr */ __lambda_3_29() = default;
 };
 
 template<class F = __lambda_3_29>

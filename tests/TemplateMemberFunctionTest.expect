@@ -77,7 +77,6 @@ int main()
       __lambda_33_10{}.operator()();
     }
     
-    
   };
   
   f.Do<__lambda_33_10>(__lambda_33_10{});
@@ -102,7 +101,6 @@ int main()
       __lambda_35_18{}.operator()();
     }
     
-    
   };
   
   f.DoOther<1>(__lambda_35_18{});
@@ -126,7 +124,6 @@ int main()
     {
       __lambda_37_21{}.operator()();
     }
-    
     
   };
   

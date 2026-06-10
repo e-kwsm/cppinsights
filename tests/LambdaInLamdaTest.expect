@@ -16,29 +16,17 @@ int main()
           buffer = 2;
         }
         
-        private: 
+        // private: 
         char & buffer;
-        
-        public:
-        __lambda_6_9(char & _buffer)
-        : buffer{_buffer}
-        {}
-        
-      } __lambda_6_9{buffer};
+      };
       
-      __lambda_6_9.operator()();
+      __lambda_6_9{buffer}.operator()();
     }
     
-    private: 
+    // private: 
     char & buffer;
-    
-    public:
-    __lambda_4_5(char & _buffer)
-    : buffer{_buffer}
-    {}
-    
-  } __lambda_4_5{buffer};
+  };
   
-  __lambda_4_5.operator()();
+  __lambda_4_5{buffer}.operator()();
   return 0;
 }

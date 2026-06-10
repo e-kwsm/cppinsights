@@ -13,18 +13,14 @@ int main()
       std::operator<<(std::cout.operator<<(x.operator*()), '\n');
     }
     
-    private: 
+    // private: 
     std::unique_ptr<int, std::default_delete<int> > x;
     public: 
     // inline /*constexpr */ __lambda_7_19(const __lambda_7_19 &) /* noexcept */ = delete;
     // inline __lambda_7_19 & operator=(const __lambda_7_19 &) /* noexcept */ = delete;
     // inline ~__lambda_7_19() noexcept = default;
-    __lambda_7_19(std::unique_ptr<int, std::default_delete<int> > && _x)
-    : x{std::move(_x)}
-    {}
-    
   };
   
-  __lambda_7_19 lambda = __lambda_7_19{std::unique_ptr<int, std::default_delete<int> >(std::move(x))};
+  __lambda_7_19 lambda = __lambda_7_19{std::move(x)};
   return 0;
 }

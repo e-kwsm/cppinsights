@@ -26,8 +26,7 @@ class __lambda_6_12
   }
   
   public:
-  // /*constexpr */ __lambda_6_12() = default;
-  
+  // /* constexpr */ __lambda_6_12() = default;
 };
 
 __lambda_6_12 foo = __lambda_6_12{};

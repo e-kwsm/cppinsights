@@ -20,8 +20,7 @@ class __lambda_4_13
   
   
   public:
-  // /*constexpr */ __lambda_4_13() = default;
-  
+  // /* constexpr */ __lambda_4_13() = default;
 };
 
 __lambda_4_13 temp = __lambda_4_13{};
@@ -50,8 +49,7 @@ class __lambda_7_14
   }
   
   public:
-  // /*constexpr */ __lambda_7_14() = default;
-  
+  // /* constexpr */ __lambda_7_14() = default;
 };
 
 __lambda_7_14 temp2 = __lambda_7_14{};
@@ -69,14 +67,8 @@ int main()
     {
     }
     
-    private: 
+    // private: 
     int v;
-    
-    public:
-    __lambda_17_16(int & _v)
-    : v{_v}
-    {}
-    
   };
   
   __lambda_17_16 temp3 = __lambda_17_16{v};

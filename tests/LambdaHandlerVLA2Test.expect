@@ -10,18 +10,12 @@ void Test(int n)
       return static_cast<int>(buffer[i]) > static_cast<int>(buffer[x]);
     }
     
-    private: 
+    // private: 
     unsigned long;
     char (&buffer)[n];
-    
-    public:
-    __lambda_6_5(char (&_buffer)[n])
-    : buffer{_buffer}
-    {}
-    
-  } __lambda_6_5{buffer};
+  };
   
-  __lambda_6_5.operator()(1, 2);
+  __lambda_6_5{buffer}.operator()(1, 2);
 }
 
 int main()

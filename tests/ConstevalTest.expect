@@ -40,8 +40,7 @@ class __lambda_16_15
   
   
   public:
-  // /*constexpr */ __lambda_16_15() = default;
-  
-} __lambda_16_15{};
+  // /* constexpr */ __lambda_16_15() = default;
+};
 
-/* PASSED: static_assert(__lambda_16_15.operator()()); */
+/* PASSED: static_assert(__lambda_16_15{}.operator()()); */

@@ -1,7 +1,6 @@
 int main()
 {
-    
-      
+        
   class __lambda_5_7
   {
     public: 
@@ -28,8 +27,8 @@ int main()
       return __lambda_5_7{}.operator()();
     }
     
-    
   };
+  
   
   class __lambda_4_5
   {
@@ -40,14 +39,10 @@ int main()
       return S(s);
     }
     
-    private: 
+    // private: 
     S s;
     public: 
     // inline /*constexpr */ __lambda_4_5(const __lambda_4_5 &) noexcept = default;
-    __lambda_4_5(const S & _s)
-    : s{_s}
-    {}
-    
   };
   
   __lambda_4_5 l = __lambda_4_5{__lambda_5_7{}.operator()()};

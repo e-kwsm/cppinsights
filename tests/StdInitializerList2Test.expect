@@ -15,14 +15,8 @@ int main(int argc, const char **)
       return std::initializer_list<int>(list);
     }
     
-    private: 
+    // private: 
     std::initializer_list<int> list;
-    
-    public:
-    __lambda_10_17(const std::initializer_list<int> & _list)
-    : list{_list}
-    {}
-    
   };
   
   __lambda_10_17 lamb = __lambda_10_17{list};
@@ -37,16 +31,9 @@ int main(int argc, const char **)
       return std::initializer_list<int>{__list14_56, 2};
     }
     
-    private: 
+    // private: 
     int i;
     int x;
-    
-    public:
-    __lambda_14_18(int & _i, int & _x)
-    : i{_i}
-    , x{_x}
-    {}
-    
   };
   
   __lambda_14_18 lamb2 = __lambda_14_18{i, x};

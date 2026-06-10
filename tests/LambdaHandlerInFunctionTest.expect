@@ -46,7 +46,6 @@ int main()
       __lambda_10_10{}.operator()();
     }
     
-    
   };
   
   Test(__lambda_10_10{});
@@ -72,9 +71,8 @@ int main()
       return __lambda_12_10{}.operator()();
     }
     
-    
-  } __lambda_12_10{};
+  };
   
-  Test(__lambda_12_10.operator()());
+  Test(__lambda_12_10{}.operator()());
   return 0;
 }

@@ -84,7 +84,6 @@ void SyncAwait(_AwrT && a)
       co_await a;
     }
     
-    
   };
   
   auto asyncLambda = __lambda_45_24{};
@@ -211,14 +210,8 @@ inline generator operator()() const
     }
     
     
-    private: 
+    // private: 
     std::suspend_always & a;
-    
-    public:
-    __lambda_45_24(std::suspend_always & _a)
-    : a{_a}
-    {}
-    
   };
   
   __lambda_45_24 asyncLambda = __lambda_45_24{a};

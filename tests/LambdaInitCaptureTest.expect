@@ -1,0 +1,31 @@
+int main()
+{
+  const int x = {3};
+    
+  class __lambda_5_20
+  {
+    public: 
+    inline /*constexpr */ void operator()() const
+    {
+    }
+    
+    // private: 
+    int x;
+  };
+  
+  __lambda_5_20 lambInit = __lambda_5_20{x};
+    
+  class __lambda_7_16
+  {
+    public: 
+    inline /*constexpr */ void operator()() const
+    {
+    }
+    
+    // private: 
+    const int x;
+  };
+  
+  __lambda_7_16 lamb = __lambda_7_16{x};
+  return 0;
+}

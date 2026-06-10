@@ -106,16 +106,15 @@ protected:
     enum class LambdaCallerType
     {
         VarDecl,
-        InitCapture,
         CallExpr,
         OperatorCallExpr,
         MemberCallExpr,
-        LambdaExpr,
         ReturnStmt,
         BinaryOperator,
         CXXMethodDecl,
-        TemplateHead,
+        LambdaExpr,
         Decltype,
+        DecltypeWithName,
     };
 
     class LambdaHelper : public StackListEntry<LambdaHelper>
@@ -123,7 +122,7 @@ protected:
     public:
         LambdaHelper(const LambdaCallerType lambdaCallerType, OutputFormatHelper& outputFormatHelper)
         : mLambdaCallerType{lambdaCallerType}
-        , mCurrentVarDeclPos{outputFormatHelper.CurrentPos()}
+        , mCurrentDeclPos{outputFormatHelper.CurrentPos()}
         , mOutputFormatHelper{outputFormatHelper}
         {
             mLambdaOutputFormatHelper.SetIndent(mOutputFormatHelper);
@@ -132,55 +131,31 @@ protected:
         void finish()
         {
             if(not mLambdaOutputFormatHelper.empty()) {
-                mOutputFormatHelper.InsertAt(mCurrentVarDeclPos, mLambdaOutputFormatHelper);
+                mOutputFormatHelper.InsertAt(mCurrentDeclPos, mLambdaOutputFormatHelper);
             }
         }
 
         OutputFormatHelper& buffer() { return mLambdaOutputFormatHelper; }
-
-        std::string& inits() { return mInits; }
-
-        void insertInits(OutputFormatHelper& outputFormatHelper)
-        {
-            if(not mInits.empty()) {
-                outputFormatHelper.Append(mInits);
-                mInits.clear();
-            }
+        LambdaCallerType    callerType() const { return mLambdaCallerType; }
+        void                setCallerType(LambdaCallerType lambdaCallerType) { mLambdaCallerType = lambdaCallerType; }
+        bool                insertName() const
+        {  // do we require the name or only the datatype?
+            return (mLambdaCallerType != LambdaCallerType::Decltype) and
+                   (mLambdaCallerType != LambdaCallerType::LambdaExpr);
         }
 
-        LambdaCallerType callerType() const { return mLambdaCallerType; }
-        bool             insertName() const { return (LambdaCallerType::Decltype != mLambdaCallerType) or mForceName; }
-
-        void setInsertName(bool b) { mForceName = b; }
-
     private:
-        const LambdaCallerType mLambdaCallerType;
-        const size_t           mCurrentVarDeclPos;
-        OutputFormatHelper&    mOutputFormatHelper;
-        OutputFormatHelper     mLambdaOutputFormatHelper{};
-        std::string            mInits{};
-        bool                   mForceName{};
+        LambdaCallerType    mLambdaCallerType{};
+        const size_t        mCurrentDeclPos{};
+        OutputFormatHelper& mOutputFormatHelper;
+        OutputFormatHelper  mLambdaOutputFormatHelper{};
     };
     //-----------------------------------------------------------------------------
 
     using LambdaStackType = StackList<class LambdaHelper>;
 
-    STRONG_BOOL(LambdaInInitCapture);  ///! Signal whether we are processing a lambda created and assigned to an init
-                                       /// capture of another lambda.
-
     STRONG_BOOL(
         ProcessingPrimaryTemplate);  ///! We do not want to transform a primary template which contains a Coroutine.
-
-    constexpr CodeGenerator(OutputFormatHelper&       _outputFormatHelper,
-                            LambdaStackType&          lambdaStack,
-                            LambdaInInitCapture       lambdaInitCapture,
-                            ProcessingPrimaryTemplate processingPrimaryTemplate)
-    : mOutputFormatHelper{_outputFormatHelper}
-    , mLambdaStack{lambdaStack}
-    , mLambdaInitCapture{lambdaInitCapture}
-    , mProcessingPrimaryTemplate{processingPrimaryTemplate}
-    {
-    }
 
 public:
     explicit constexpr CodeGenerator(OutputFormatHelper& _outputFormatHelper)
@@ -188,15 +163,12 @@ public:
     {
     }
 
-    constexpr CodeGenerator(OutputFormatHelper& _outputFormatHelper, LambdaInInitCapture lambdaInitCapture)
-    : CodeGenerator{_outputFormatHelper, mLambdaStackThis, lambdaInitCapture, ProcessingPrimaryTemplate::No}
-    {
-    }
-
     constexpr CodeGenerator(OutputFormatHelper&       _outputFormatHelper,
                             LambdaStackType&          lambdaStack,
                             ProcessingPrimaryTemplate processingPrimaryTemplate)
-    : CodeGenerator{_outputFormatHelper, lambdaStack, LambdaInInitCapture::No, processingPrimaryTemplate}
+    : mOutputFormatHelper{_outputFormatHelper}
+    , mLambdaStack{lambdaStack}
+    , mProcessingPrimaryTemplate{processingPrimaryTemplate}
     {
     }
 
@@ -420,7 +392,6 @@ protected:
         OutputFormatHelper& GetBuffer(OutputFormatHelper& outputFormatHelper) const;
     };
 
-    void               HandleLambdaExpr(const LambdaExpr* stmt, LambdaHelper& lambdaHelper);
     static std::string FillConstantArray(const ConstantArrayType* ct, const std::string& value, const uint64_t startAt);
     static std::string GetValueOfValueInit(const QualType& t);
 
@@ -433,7 +404,6 @@ protected:
     STRONG_BOOL(UseCommaInsteadOfSemi);
     STRONG_BOOL(NoEmptyInitList);
     STRONG_BOOL(ShowConstantExprValue);
-    LambdaInInitCapture mLambdaInitCapture{LambdaInInitCapture::No};
 
     ShowConstantExprValue mShowConstantExprValue{ShowConstantExprValue::No};
     SkipVarDecl           mSkipVarDecl{SkipVarDecl::No};
@@ -458,18 +428,6 @@ protected:
     bool mSkipSemi{};
     ProcessingPrimaryTemplate                 mProcessingPrimaryTemplate{};
     static inline std::map<std::string, bool> mSeenDecls{};
-};
-//-----------------------------------------------------------------------------
-
-class LambdaCodeGenerator final : public CodeGenerator
-{
-public:
-    using CodeGenerator::CodeGenerator;
-
-    using CodeGenerator::InsertArg;
-    void InsertArg(const CXXThisExpr* stmt) override;
-
-    bool mCapturedThisAsCopy{};
 };
 //-----------------------------------------------------------------------------
 
@@ -679,7 +637,7 @@ class CodeGeneratorVariant
         CodeGenerators(OutputFormatHelper&                      _outputFormatHelper,
                        CodeGenerator::LambdaStackType&          lambdaStack,
                        CodeGenerator::ProcessingPrimaryTemplate processingPrimaryTemplate);
-        CodeGenerators(OutputFormatHelper& _outputFormatHelper, CodeGenerator::LambdaInInitCapture lambdaInitCapture);
+        CodeGenerators(OutputFormatHelper& _outputFormatHelper);
 
         ~CodeGenerators();
     } cgs;
@@ -690,11 +648,6 @@ class CodeGeneratorVariant
     void Set();
 
 public:
-    CodeGeneratorVariant(OutputFormatHelper& _outputFormatHelper)
-    : CodeGeneratorVariant{_outputFormatHelper, CodeGenerator::LambdaInInitCapture::No}
-    {
-    }
-
     CodeGeneratorVariant(OutputFormatHelper&                      _outputFormatHelper,
                          CodeGenerator::LambdaStackType&          lambdaStack,
                          CodeGenerator::ProcessingPrimaryTemplate processingPrimaryTemplate)
@@ -705,8 +658,8 @@ public:
         Set();
     }
 
-    CodeGeneratorVariant(OutputFormatHelper& _outputFormatHelper, CodeGenerator::LambdaInInitCapture lambdaInitCapture)
-    : cgs{_outputFormatHelper, lambdaInitCapture}
+    CodeGeneratorVariant(OutputFormatHelper& _outputFormatHelper)
+    : cgs{_outputFormatHelper}
     , ofm{_outputFormatHelper}
     , cg{}
     {

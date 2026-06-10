@@ -16,17 +16,11 @@ int main()
           return c;
         }
         
-        private: 
+        // private: 
         char & c;
-        
-        public:
-        __lambda_6_17(char & _c)
-        : c{_c}
-        {}
-        
-      } __lambda_6_17{c};
+      };
       
-      int x = static_cast<int>(__lambda_6_17.operator()());
+      int x = static_cast<int>(__lambda_6_17{c}.operator()());
     }
     
   }
